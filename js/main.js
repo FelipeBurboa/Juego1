@@ -1,5 +1,5 @@
 window.addEventListener("load", init);
-
+loadDoc();
 //Variables globales
 
 //Niveles de dificultad
@@ -16,7 +16,7 @@ const currentLevel = levels.easy;
 let time = currentLevel;
 let score = 0;
 let isPlaying;
-
+let pala = "Go";
 //Elementos DOM
 const wordInput = document.querySelector("#word-input");
 const currentWord = document.querySelector("#current-word");
@@ -27,44 +27,37 @@ const seconds = document.querySelector("#seconds");
 
 //Palabras
 
-const words = [
-  "Gorro",
-  "Rio",
-  "Suerte",
-  "Estatua",
-  "Generar",
-  "Feliz",
-  "Cocktail",
-  "Escapar",
-  "Chiste",
-  "Desarrollador",
-  "Casa",
-  "Heroe",
-  "Javascript",
-  "Nutricion",
-  "Revolver",
-  "Eco",
-  "Hermanos",
-  "Investigar",
-  "Horrendo",
-  "Sintoma",
-  "Risa",
-  "Magia",
-  "Maestro",
-  "Espacio",
-  "Definicion"
-];
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var response = JSON.parse(xhttp.responseText);
+      var rango = response.length;
+      const random = Math.floor(Math.random() * rango);
+      var palabra = response[random].word;
+      var prueba = JSON.stringify(palabra);
+      var prueba1 = prueba.charAt(1).toUpperCase() + prueba.slice(2);
+      var prueba1 = prueba1.slice(0, -1);
+      pala = prueba1;
+      console.log(rango);
+      console.log(pala);
+    }
+  };
+  xhttp.open("GET", "palabras.json", true);
+  xhttp.send();
+}
+
+const words = "";
 
 //Inicializar Juego
 
 function init() {
   //Monstrar el numero de segundos
-
   seconds.innerHTML = currentLevel;
 
   //Cargar la palabra desde el array
-
-  showWord(words);
+  loadDoc();
+  showWord(pala);
   //Que comience un evento cada vez que existe un input
   wordInput.addEventListener("input", startMatch);
 
@@ -97,6 +90,7 @@ function startMatch() {
 function matchWords() {
   if (wordInput.value === currentWord.innerHTML) {
     message.innerHTML = "Correcto!!";
+    loadDoc();
     return true;
   } else {
     message.innerHTML = "";
@@ -106,13 +100,10 @@ function matchWords() {
 
 //Elegir y mostrar la palabra random
 
-function showWord(words) {
-  //Generar un index random dentro del array de words
-  const randIndex = Math.floor(Math.random() * words.length);
+function showWord() {
+  //Muestra una palabra random
 
-  //Generar una palabra random
-
-  currentWord.innerHTML = words[randIndex];
+  currentWord.innerHTML = pala;
 }
 
 //Cuenta regresiva timer
